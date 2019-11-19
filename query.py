@@ -48,7 +48,22 @@ def query2(textSearch, minReviews):
         An array of documents.
     """
     docs = db.airbnb.find(
-        # TODO: implement me
+        {
+            '$text': {
+                '$search': textSearch
+            },
+            'number_of_reviews': {
+                '$gte': minReviews
+            }
+        },
+        {
+            '_id': 0,
+            'name': 1,
+            'number_of_reviews': 1,
+            'neighbourhood': 1,
+            'price': 1,
+            'location': 1
+        }
     )
 
     result = [doc for doc in docs]
