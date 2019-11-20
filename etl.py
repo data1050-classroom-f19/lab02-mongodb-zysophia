@@ -50,7 +50,7 @@ def load_taxi(file):
         d['pickup_datetime'] = datetime.strptime(d['pickup_datetime'], '%Y-%m-%d %H:%M:%S %Z')
         arr.append(d.copy())
 
-    inserted_ids = db.airbnb.insert_many(arr).inserted_ids
+    inserted_ids = db.taxi.insert_many(arr).inserted_ids
     print(len(inserted_ids), "Taxi documents inserted")
 
 

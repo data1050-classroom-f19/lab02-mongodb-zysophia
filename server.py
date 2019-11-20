@@ -32,6 +32,7 @@ def index():
 
 @app.route("/query1")
 def query1():
+    print("dealing with query1...........")
     minFare = int(request.args.get('minFare'))
     maxFare = int(request.args.get('maxFare'))
 
@@ -41,6 +42,7 @@ def query1():
 
 @app.route("/query2")
 def query2():
+    print("dealing with query2...........")
     search = request.args.get('search')
     minReviews = int(request.args.get('minReviews'))
 
@@ -50,18 +52,21 @@ def query2():
 
 @app.route("/query3")
 def query3():
+    print("dealing with query3...........")
     result = query.query3()
     return jsonify(result)
 
 
 @app.route("/query4")
 def query4():
+    print("dealing with query4...........")
     result = query.query4()
     return jsonify(result)
 
 
 @app.route("/query5")
 def query5():
+    print("dealing with query5...........")
     result = query.query5()
     return jsonify(result)
 

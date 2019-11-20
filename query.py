@@ -22,14 +22,18 @@ def query1(minFare, maxFare):
     Returns:
         An array of documents.
     """
-    docs = db.taxi.find([
-        {"fare_amount": {"$gt": minFare}, "fare_amount": {"$lt": maxFare}},
-        {'$project': {
-         '_id': 0,
-         'pickup_longitude': 1,
-         'pickup_latitude': 1,
-         'fare_amount': 1}}
-    ])
+    docs = db.taxi.find({
+            'fare_amount': {
+                '$gte': minFare,
+                '$lte': maxFare
+            }
+        }, 
+        {
+            '_id': 0,
+            'pickup_longitude': 1,
+            'pickup_latitude': 1,
+            'fare_amount': 1
+        })
 
     result = [doc for doc in docs]
     return result
@@ -82,10 +86,15 @@ def query3():
         An array of documents.
     """
     docs = db.airbnb.aggregate(
-        [
-            {"$group": {_id: "$neighbourhood_group", avg: {"$avg": "$price"}}},
-            {"$sort": {avg: -1}}
-        ]
+         [{
+            '$group': {
+                '_id': '$neighbourhood_group',
+                'avg_price': {'$avg': '$price'}
+            }
+        },
+        {
+            '$sort': {"avg_price": -1}
+        }]
     )
 
     result = [doc for doc in docs]
@@ -103,22 +112,19 @@ def query4():
         An array of documents.
     """
     docs = db.taxi.aggregate(
-        [
-     {
-       $project:
-         {
-           year: { $year: "$date" },
-           month: { $month: "$date" },
-           day: { $dayOfMonth: "$date" },
-           hour: { $hour: "$date" },
-           minutes: { $minute: "$date" },
-           seconds: { $second: "$date" },
-           milliseconds: { $millisecond: "$date" },
-           dayOfYear: { $dayOfYear: "$date" },
-           dayOfWeek: { $dayOfWeek: "$date" }
-         }
-     }
-   ]
+          [{
+            '$group': {
+                '_id': {'$hour': '$pickup_datetime'},
+                'average_fare': {'$avg': '$fare_amount'},
+                'average_dist': {'$avg': {'$add': [{'$abs': {'$subtract': ['$pickup_longitude', '$dropoff_longitude']}}, 
+                                                   {'$abs': {'$subtract': ['$pickup_latitude', '$dropoff_latitude']}}]}
+                },
+                'passenger_count': {'$sum': '$passenger_count'}
+            }
+        },
+        {
+            '$sort': {"average_price": -1}
+        }]
     )
     result = [doc for doc in docs]
     return result
